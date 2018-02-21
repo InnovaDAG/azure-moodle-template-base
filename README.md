@@ -16,7 +16,6 @@ This template set deploys the following infrastructure:
 - Postgres or MySQL database
 - Azure Redis instance for Moodle caching
 - ObjectFS in Azure blobs (Moodle sitedata)
-- Three Elasticsearch VMs for search indexing in Moodle
 - Dual gluster nodes for high availability access to Moodle files
 
 ![network_diagram](images/stack_diagram.jpg "Diagram of deployed stack")
