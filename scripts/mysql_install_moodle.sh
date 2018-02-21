@@ -22,7 +22,6 @@
 
 #parameters
 {
-    moodleVersion=${1}
     glusterNode=${2}
     glusterVolume=${3}
     siteFQDN=${4}
@@ -40,7 +39,6 @@
     redisAuth=${16}
     elasticVm1IP=${17}
 
-    echo $moodleVersion        >> /tmp/vars.txt
     echo $glusterNode          >> /tmp/vars.txt
     echo $glusterVolume        >> /tmp/vars.txt
     echo $siteFQDN             >> /tmp/vars.txt
