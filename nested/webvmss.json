@@ -51,6 +51,21 @@
                                     "type": "LinuxDiagnostic",
                                     "typeHandlerVersion": "2.3"
                                 }
+                            },
+                            {
+                                "name": "setup_moodle",
+                                "properties": {
+                                    "autoUpgradeMinorVersion": true,
+                                    "publisher": "Microsoft.OSTCExtensions",
+                                    "settings": {
+                                        "commandToExecute": "[variables('cmdExec')]",
+                                        "fileUris": [
+                                            "[variables('scriptUri')]"
+                                        ]
+                                    },
+                                    "type": "CustomScriptForLinux",
+                                    "typeHandlerVersion": "1.4"
+                                }
                             }
                         ]
                     },
@@ -182,6 +197,7 @@
         }
     ],
     "variables": {
+        "cmdExec": "[concat('bash ',parameters('moodleCommon').moodleSetupScriptFilename,' ',parameters('moodleCommon').gfsNameRoot,'0', ' ','data', ' ', parameters('moodleCommon').siteURL, ' ', concat('jumpbox-vm-',parameters('moodleCommon').resourcesPrefix))]",
         "dstorID": "[resourceId('Microsoft.Storage/storageAccounts',parameters('moodleCommon').vmssdStorageAccounttName)]",
         "extBeID": "[concat(variables('extLbID'),'/backendAddressPools/',parameters('moodleCommon').extBeName)]",
         "extFeID": "[concat(variables('extLbID'),'/frontendIPConfigurations/',parameters('moodleCommon').extFeName)]",

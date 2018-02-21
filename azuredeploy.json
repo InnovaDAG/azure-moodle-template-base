@@ -118,6 +118,7 @@
             },
             "type": "int"
         },
+
         "dbLogin": {
             "defaultValue": "dbadmin",
             "metadata": {
@@ -461,8 +462,8 @@
         "documentation10": "    controller          - creates a jumpbox and deploys code",
         "documentation11": "GlusterFS Sizing guidance",
         "moodleCommon": {
-            "baseTemplateUrl": "https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/moodle-scalable-cluster-ubuntu/nested/",
-            "scriptLocation": "https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/moodle-scalable-cluster-ubuntu/scripts/",
+            "baseTemplateUrl": "https://github.com/InnovaDAG/azure-moodle-template-base/nested/",
+            "scriptLocation": "https://github.com/InnovaDAG/azure-moodle-template-base/scripts/",
 
             "applyScriptsSwitch": "[parameters('applyScriptsSwitch')]",
             "autoscaleVmCount": "[parameters('autoscaleVmCount')]",
@@ -508,6 +509,7 @@
             "moodleDbUserAzure": "[concat('moodle', '@', parameters('dbServerType'), '-', variables('resourceprefix'))]",
             "moodleInstallScriptFilename": "[concat(parameters('dbServerType'), '_', 'install_moodle.sh')]",
             "moodleSetupScriptFilename": "setup_moodle.sh",
+            "moodleVersion": "[parameters('moodleVersion')]",
             "mysqlVersion": "[parameters('mysqlVersion')]",
             "osType": {
                 "offer": "UbuntuServer",
