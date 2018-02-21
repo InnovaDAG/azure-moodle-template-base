@@ -49,14 +49,14 @@
             "type": "string"
         },
         "controllerVmSku": {
-            "defaultValue": "Standard_DS1_v2",
+            "defaultValue": "Standard_A1_v2",
             "metadata": {
                 "description": "VM size for the controller node"
             },
             "type": "string"
         },
         "autoscaleVmSku": {
-            "defaultValue": "Standard_DS2_v2",
+            "defaultValue": "Standard_A1_v2",
             "metadata": {
                 "description": "VM size for autoscaled nodes"
             },
@@ -98,7 +98,7 @@
             "type": "string"
         },
         "glusterVmSku": {
-            "defaultValue": "Standard_DS2_v2",
+            "defaultValue": "Standard_A1_v2",
             "metadata": {
                 "description": "VM size for the gluster nodes"
             },
@@ -509,7 +509,6 @@
             "moodleDbUserAzure": "[concat('moodle', '@', parameters('dbServerType'), '-', variables('resourceprefix'))]",
             "moodleInstallScriptFilename": "[concat(parameters('dbServerType'), '_', 'install_moodle.sh')]",
             "moodleSetupScriptFilename": "setup_moodle.sh",
-            "moodleVersion": "[parameters('moodleVersion')]",
             "mysqlVersion": "[parameters('mysqlVersion')]",
             "osType": {
                 "offer": "UbuntuServer",
