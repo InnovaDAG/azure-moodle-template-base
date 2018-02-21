@@ -118,21 +118,6 @@
             },
             "type": "int"
         },
-        "moodleVersion": {
-            "allowedValues": [
-                "MOODLE_34_STABLE",
-                "MOODLE_33_STABLE",
-                "MOODLE_32_STABLE",
-                "MOODLE_31_STABLE",
-                "MOODLE_30_STABLE",
-                "MOODLE_29_STABLE"
-            ],
-            "defaultValue": "MOODLE_34_STABLE",
-            "metadata": {
-                "description": "The Moodle version you want to install."
-            },
-            "type": "string"
-        },
         "dbLogin": {
             "defaultValue": "dbadmin",
             "metadata": {
@@ -523,7 +508,6 @@
             "moodleDbUserAzure": "[concat('moodle', '@', parameters('dbServerType'), '-', variables('resourceprefix'))]",
             "moodleInstallScriptFilename": "[concat(parameters('dbServerType'), '_', 'install_moodle.sh')]",
             "moodleSetupScriptFilename": "setup_moodle.sh",
-            "moodleVersion": "[parameters('moodleVersion')]",
             "mysqlVersion": "[parameters('mysqlVersion')]",
             "osType": {
                 "offer": "UbuntuServer",
