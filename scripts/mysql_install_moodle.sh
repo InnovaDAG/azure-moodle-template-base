@@ -8,10 +8,10 @@
 # to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 # copies of the Software, and to permit persons to whom the Software is
 # furnished to do so, subject to the following conditions:
-# 
+#
 # The above copyright notice and this permission notice shall be included in all
 # copies or substantial portions of the Software.
-# 
+#
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 # IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 # FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-#parameters 
+#parameters
 {
     moodleVersion=${1}
     glusterNode=${2}
@@ -38,7 +38,6 @@
     azuremoodledbuser=${14}
     redisDns=${15}
     redisAuth=${16}
-    elasticVm1IP=${17}
 
     echo $moodleVersion        >> /tmp/vars.txt
     echo $glusterNode          >> /tmp/vars.txt
@@ -56,7 +55,6 @@
     echo $azuremoodledbuser    >> /tmp/vars.txt
     echo $redisDns             >> /tmp/vars.txt
     echo $redisAuth            >> /tmp/vars.txt
-    echo $elasticVm1IP         >> /tmp/vars.txt
 
     # make sure system does automatic updates and fail2ban
     sudo apt-get -y update
@@ -592,11 +590,11 @@ EOF
         --output tsv)
 
     # mount gluster files system
-    echo -e '\n\rInstalling GlusterFS on '$glusterNode':/'$glusterVolume '/moodle\n\r' 
+    echo -e '\n\rInstalling GlusterFS on '$glusterNode':/'$glusterVolume '/moodle\n\r'
     sudo mount -t glusterfs $glusterNode:/$glusterVolume /moodle
 
-    
-    
+
+
     # install pre-requisites
     sudo apt-get install -y --fix-missing python-software-properties unzip
 
@@ -616,11 +614,11 @@ EOF
     mkdir -p /moodle/moodledata
     chown -R www-data.www-data /moodle
 
-    # install Moodle 
+    # install Moodle
     echo '#!/bin/bash
     cd /tmp
 
-    # downloading moodle 
+    # downloading moodle
     /usr/bin/curl -k --max-redirs 10 https://github.com/moodle/moodle/archive/'$moodleVersion'.zip -L -o moodle.zip
     /usr/bin/unzip -q moodle.zip
     /bin/mv -v moodle-'$moodleVersion' /moodle/html/moodle
@@ -633,19 +631,6 @@ EOF
     #        cp -r o365-moodle-'$moodleVersion'/* /moodle/html/moodle
     #        rm -rf o365-moodle-'$moodleVersion'
     #fi
-
-    # Install ElasticSearch plugin
-    /usr/bin/curl -k --max-redirs 10 https://github.com/catalyst/moodle-search_elastic/archive/master.zip -L -o plugin-elastic.zip
-    /usr/bin/unzip -q plugin-elastic.zip
-    /bin/mkdir -p /moodle/html/moodle/search/engine/elastic
-    /bin/cp -r moodle-search_elastic-master/* /moodle/html/moodle/search/engine/elastic
-    /bin/rm -rf moodle-search_elastic-master
-
-    # Install ElasticSearch plugin dependency
-    /usr/bin/curl -k --max-redirs 10 https://github.com/catalyst/moodle-local_aws/archive/master.zip -L -o local-aws.zip
-    /usr/bin/unzip -q local-aws.zip
-    /bin/mkdir -p /moodle/html/moodle/local/aws
-    /bin/cp -r moodle-local_aws-master/* /moodle/html/moodle/local/aws
 
     # Install the ObjectFS plugin
     /usr/bin/curl -k --max-redirs 10 https://github.com/catalyst/moodle-tool_objectfs/archive/master.zip -L -o plugin-objectfs.zip
@@ -660,7 +645,7 @@ EOF
     /bin/mkdir -p /moodle/html/moodle/local/azure_storage
     /bin/cp -r moodle-local_azure_storage-master/* /moodle/html/moodle/local/azure_storage
     /bin/rm -rf moodle-local_azure_storage-master
-    ' > /tmp/setup-moodle.sh 
+    ' > /tmp/setup-moodle.sh
 
     chmod 755 /tmp/setup-moodle.sh
     sudo -u www-data /tmp/setup-moodle.sh  >> /tmp/setupmoodle.log
@@ -689,7 +674,7 @@ http {
   client_max_body_size 0;
   proxy_max_temp_file_size 0;
   server_names_hash_bucket_size  128;
-  fastcgi_buffers 16 16k; 
+  fastcgi_buffers 16 16k;
   fastcgi_buffer_size 32k;
   proxy_buffering off;
   include /etc/nginx/mime.types;
@@ -712,11 +697,11 @@ http {
   gzip_http_version 1.1;
   gzip_types text/plain text/css application/json application/x-javascript text/xml application/xml application/xml+rss text/javascript;
 
-  map \$http_x_forwarded_proto \$fastcgi_https {                                                                                          
-    default \$https;                                                                                                                   
-    http '';                                                                                                                          
-    https on;                                                                                                                         
-  }   
+  map \$http_x_forwarded_proto \$fastcgi_https {
+    default \$https;
+    http '';
+    https on;
+  }
 
   log_format moodle_combined '\$remote_addr - \$upstream_http_x_moodleuser [\$time_local] '
                              '"\$request" \$status \$body_bytes_sent '
@@ -763,13 +748,13 @@ server {
 	location / {
 		try_files \$uri \$uri/index.php?\$query_string;
 	}
- 
+
         location ~ [^/]\.php(/|$) {
           fastcgi_split_path_info ^(.+?\.php)(/.*)$;
           if (!-f \$document_root\$fastcgi_script_name) {
                   return 404;
           }
- 
+
           fastcgi_buffers 16 16k;
           fastcgi_buffer_size 32k;
           fastcgi_param   SCRIPT_FILENAME \$document_root\$fastcgi_script_name;
@@ -816,7 +801,7 @@ EOF
     echo -e "Generating SSL self-signed certificate"
     openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /moodle/certs/nginx.key -out /moodle/certs/nginx.crt -subj "/C=BR/ST=SP/L=SaoPaulo/O=IT/CN=$siteFQDN"
 
-   # php config 
+   # php config
    PhpIni=/etc/php/7.0/fpm/php.ini
    sed -i "s/memory_limit.*/memory_limit = 512M/" $PhpIni
    sed -i "s/max_execution_time.*/max_execution_time = 18000/" $PhpIni
@@ -832,7 +817,7 @@ EOF
    sed -i "s/;opcache.memory_consumption.*/opcache.memory_consumption = 256/" $PhpIni
    sed -i "s/;opcache.max_accelerated_files.*/opcache.max_accelerated_files = 8000/" $PhpIni
 
-   # fpm config - overload this 
+   # fpm config - overload this
    cat <<EOF > /etc/php/7.0/fpm/pool.d/www.conf
 [www]
 user = www-data
@@ -842,16 +827,16 @@ listen.owner = www-data
 listen.group = www-data
 pm = dynamic
 pm.max_children = 3000
-pm.start_servers = 20 
-pm.min_spare_servers = 22 
-pm.max_spare_servers = 30 
+pm.start_servers = 20
+pm.min_spare_servers = 22
+pm.max_spare_servers = 30
 EOF
 
    # Remove the default site. Moodle is the only site we want
    rm -f /etc/nginx/sites-enabled/default
 
    # restart Nginx
-    sudo service nginx restart 
+    sudo service nginx restart
 
    # Configure varnish startup for 16.04
    VARNISHSTART="ExecStart=\/usr\/sbin\/varnishd -j unix,user=vcache -F -a :80 -T localhost:6082 -f \/etc\/varnish\/moodle.vcl -S \/etc\/varnish\/secret -s malloc,1024m -p thread_pool_min=200 -p thread_pool_max=4000 -p thread_pool_add_delay=2 -p timeout_linger=100 -p timeout_idle=30 -p send_timeout=1800 -p thread_pools=4 -p http_max_hdr=512 -p workspace_backend=512k"
@@ -967,7 +952,7 @@ sub vcl_recv {
 
 sub vcl_backend_response {
     # Happens after we have read the response headers from the backend.
-    # 
+    #
     # Here you clean the response headers, removing silly Set-Cookie headers
     # and other mistakes your backend does.
 
@@ -1069,7 +1054,7 @@ sub vcl_backend_error {
 sub vcl_synth {
 
     #Redirect using '301 - Permanent Redirect', permanent redirect
-    if (resp.status == 851) { 
+    if (resp.status == 851) {
         set resp.http.Location = req.http.x-redir;
         set resp.http.X-Varnish-Redirect = true;
         set resp.status = 301;
@@ -1077,7 +1062,7 @@ sub vcl_synth {
     }
 
     #Redirect using '302 - Found', temporary redirect
-    if (resp.status == 852) { 
+    if (resp.status == 852) {
         set resp.http.Location = req.http.x-redir;
         set resp.http.X-Varnish-Redirect = true;
         set resp.status = 302;
@@ -1085,7 +1070,7 @@ sub vcl_synth {
     }
 
     #Redirect using '307 - Temporary Redirect', !GET&&!HEAD requests, dont change method on redirected requests
-    if (resp.status == 857) { 
+    if (resp.status == 857) {
         set resp.http.Location = req.http.x-redir;
         set resp.http.X-Varnish-Redirect = true;
         set resp.status = 307;
@@ -1129,7 +1114,7 @@ EOF
     echo -e "cd /tmp; sudo -u www-data /usr/bin/php /moodle/html/moodle/admin/cli/install.php --chmod=770 --lang=en_us --wwwroot=https://"$siteFQDN" --dataroot=/moodle/moodledata --dbhost="$mysqlIP" --dbname="$moodledbname" --dbuser="$azuremoodledbuser" --dbpass="$moodledbpass" --dbtype=mysqli --fullname='Moodle LMS' --shortname='Moodle' --adminuser=admin --adminpass="$adminpass" --adminemail=admin@"$siteFQDN" --non-interactive --agree-license --allow-unstable || true "
     cd /tmp; sudo -u www-data /usr/bin/php /moodle/html/moodle/admin/cli/install.php --chmod=770 --lang=en_us --wwwroot=https://$siteFQDN   --dataroot=/moodle/moodledata --dbhost=$mysqlIP   --dbname=$moodledbname   --dbuser=$azuremoodledbuser   --dbpass=$moodledbpass   --dbtype=mysqli --fullname='Moodle LMS' --shortname='Moodle' --adminuser=admin --adminpass=$adminpass   --adminemail=admin@$siteFQDN   --non-interactive --agree-license --allow-unstable || true
 
-    mysql -h $mysqlIP -u $mysqladminlogin -p${mysqladminpass} ${moodledbname} -e "INSERT INTO mdl_config_plugins (plugin, name, value) VALUES ('tool_objectfs', 'enabletasks', 1);" 
+    mysql -h $mysqlIP -u $mysqladminlogin -p${mysqladminpass} ${moodledbname} -e "INSERT INTO mdl_config_plugins (plugin, name, value) VALUES ('tool_objectfs', 'enabletasks', 1);"
     mysql -h $mysqlIP -u $mysqladminlogin -p${mysqladminpass} ${moodledbname} -e "INSERT INTO mdl_config_plugins (plugin, name, value) VALUES ('tool_objectfs', 'filesystem', '\\\tool_objectfs\\\azure_file_system');"
     mysql -h $mysqlIP -u $mysqladminlogin -p${mysqladminpass} ${moodledbname} -e "INSERT INTO mdl_config_plugins (plugin, name, value) VALUES ('tool_objectfs', 'azure_accountname', '${wabsacctname}');"
     mysql -h $mysqlIP -u $mysqladminlogin -p${mysqladminpass} ${moodledbname} -e "INSERT INTO mdl_config_plugins (plugin, name, value) VALUES ('tool_objectfs', 'azure_container', 'objectfs');"
@@ -1142,13 +1127,13 @@ EOF
 <?php defined('MOODLE_INTERNAL') || die();
  \$configuration = array (
   'siteidentifier' => '7a142be09ea65699e4a6f6ef91c0773c',
-  'stores' => 
+  'stores' =>
   array (
-    'default_application' => 
+    'default_application' =>
     array (
       'name' => 'default_application',
       'plugin' => 'file',
-      'configuration' => 
+      'configuration' =>
       array (
       ),
       'features' => 30,
@@ -1157,11 +1142,11 @@ EOF
       'class' => 'cachestore_file',
       'lock' => 'cachelock_file_default',
     ),
-    'default_session' => 
+    'default_session' =>
     array (
       'name' => 'default_session',
       'plugin' => 'session',
-      'configuration' => 
+      'configuration' =>
       array (
       ),
       'features' => 14,
@@ -1170,11 +1155,11 @@ EOF
       'class' => 'cachestore_session',
       'lock' => 'cachelock_file_default',
     ),
-    'default_request' => 
+    'default_request' =>
     array (
       'name' => 'default_request',
       'plugin' => 'static',
-      'configuration' => 
+      'configuration' =>
       array (
       ),
       'features' => 31,
@@ -1183,11 +1168,11 @@ EOF
       'class' => 'cachestore_static',
       'lock' => 'cachelock_file_default',
     ),
-    'redis' => 
+    'redis' =>
     array (
       'name' => 'redis',
       'plugin' => 'redis',
-      'configuration' => 
+      'configuration' =>
       array (
         'server' => '$redisDns',
         'prefix' => 'moodle_prod',
@@ -1201,11 +1186,11 @@ EOF
       'default' => false,
       'lock' => 'cachelock_file_default',
     ),
-    'local_file' => 
+    'local_file' =>
     array (
       'name' => 'local_file',
       'plugin' => 'file',
-      'configuration' => 
+      'configuration' =>
       array (
         'path' => '/tmp/muc/moodle_prod',
         'autocreate' => 1,
@@ -1218,30 +1203,30 @@ EOF
       'lock' => 'cachelock_file_default',
     ),
   ),
-  'modemappings' => 
+  'modemappings' =>
   array (
-    0 => 
+    0 =>
     array (
       'store' => 'redis',
       'mode' => 1,
       'sort' => 0,
     ),
-    1 => 
+    1 =>
     array (
       'store' => 'default_session',
       'mode' => 2,
       'sort' => 0,
     ),
-    2 => 
+    2 =>
     array (
       'store' => 'default_request',
       'mode' => 4,
       'sort' => 0,
     ),
   ),
-  'definitions' => 
+  'definitions' =>
   array (
-    'core/string' => 
+    'core/string' =>
     array (
       'mode' => 1,
       'simplekeys' => true,
@@ -1255,7 +1240,7 @@ EOF
       'userinputsharingkey' => '',
       'sharingoptions' => 15,
     ),
-    'core/langmenu' => 
+    'core/langmenu' =>
     array (
       'mode' => 1,
       'simplekeys' => true,
@@ -1268,10 +1253,10 @@ EOF
       'userinputsharingkey' => '',
       'sharingoptions' => 15,
     ),
-    'core/databasemeta' => 
+    'core/databasemeta' =>
     array (
       'mode' => 1,
-      'requireidentifiers' => 
+      'requireidentifiers' =>
       array (
         0 => 'dbfamily',
       ),
@@ -1284,7 +1269,7 @@ EOF
       'userinputsharingkey' => '',
       'sharingoptions' => 15,
     ),
-    'core/eventinvalidation' => 
+    'core/eventinvalidation' =>
     array (
       'mode' => 1,
       'staticacceleration' => true,
@@ -1296,7 +1281,7 @@ EOF
       'userinputsharingkey' => '',
       'sharingoptions' => 15,
     ),
-    'core/questiondata' => 
+    'core/questiondata' =>
     array (
       'mode' => 1,
       'simplekeys' => true,
@@ -1309,7 +1294,7 @@ EOF
       'userinputsharingkey' => '',
       'sharingoptions' => 15,
     ),
-    'core/htmlpurifier' => 
+    'core/htmlpurifier' =>
     array (
       'mode' => 1,
       'canuselocalstore' => true,
@@ -1319,7 +1304,7 @@ EOF
       'userinputsharingkey' => '',
       'sharingoptions' => 15,
     ),
-    'core/config' => 
+    'core/config' =>
     array (
       'mode' => 1,
       'staticacceleration' => true,
@@ -1330,7 +1315,7 @@ EOF
       'userinputsharingkey' => '',
       'sharingoptions' => 15,
     ),
-    'core/groupdata' => 
+    'core/groupdata' =>
     array (
       'mode' => 1,
       'simplekeys' => true,
@@ -1343,7 +1328,7 @@ EOF
       'userinputsharingkey' => '',
       'sharingoptions' => 15,
     ),
-    'core/calendar_subscriptions' => 
+    'core/calendar_subscriptions' =>
     array (
       'mode' => 1,
       'simplekeys' => true,
@@ -1355,7 +1340,7 @@ EOF
       'userinputsharingkey' => '',
       'sharingoptions' => 15,
     ),
-    'core/capabilities' => 
+    'core/capabilities' =>
     array (
       'mode' => 1,
       'simplekeys' => true,
@@ -1369,7 +1354,7 @@ EOF
       'userinputsharingkey' => '',
       'sharingoptions' => 15,
     ),
-    'core/yuimodules' => 
+    'core/yuimodules' =>
     array (
       'mode' => 1,
       'component' => 'core',
@@ -1378,7 +1363,7 @@ EOF
       'userinputsharingkey' => '',
       'sharingoptions' => 15,
     ),
-    'core/observers' => 
+    'core/observers' =>
     array (
       'mode' => 1,
       'simplekeys' => true,
@@ -1391,7 +1376,7 @@ EOF
       'userinputsharingkey' => '',
       'sharingoptions' => 15,
     ),
-    'core/plugin_manager' => 
+    'core/plugin_manager' =>
     array (
       'mode' => 1,
       'simplekeys' => true,
@@ -1402,11 +1387,11 @@ EOF
       'userinputsharingkey' => '',
       'sharingoptions' => 15,
     ),
-    'core/coursecattree' => 
+    'core/coursecattree' =>
     array (
       'mode' => 1,
       'staticacceleration' => true,
-      'invalidationevents' => 
+      'invalidationevents' =>
       array (
         0 => 'changesincoursecat',
       ),
@@ -1416,10 +1401,10 @@ EOF
       'userinputsharingkey' => '',
       'sharingoptions' => 15,
     ),
-    'core/coursecat' => 
+    'core/coursecat' =>
     array (
       'mode' => 2,
-      'invalidationevents' => 
+      'invalidationevents' =>
       array (
         0 => 'changesincoursecat',
         1 => 'changesincourse',
@@ -1431,11 +1416,11 @@ EOF
       'userinputsharingkey' => '',
       'sharingoptions' => 2,
     ),
-    'core/coursecatrecords' => 
+    'core/coursecatrecords' =>
     array (
       'mode' => 4,
       'simplekeys' => true,
-      'invalidationevents' => 
+      'invalidationevents' =>
       array (
         0 => 'changesincoursecat',
       ),
@@ -1445,7 +1430,7 @@ EOF
       'userinputsharingkey' => '',
       'sharingoptions' => 2,
     ),
-    'core/coursecontacts' => 
+    'core/coursecontacts' =>
     array (
       'mode' => 1,
       'staticacceleration' => true,
@@ -1457,7 +1442,7 @@ EOF
       'userinputsharingkey' => '',
       'sharingoptions' => 15,
     ),
-    'core/repositories' => 
+    'core/repositories' =>
     array (
       'mode' => 4,
       'component' => 'core',
@@ -1466,7 +1451,7 @@ EOF
       'userinputsharingkey' => '',
       'sharingoptions' => 2,
     ),
-    'core/externalbadges' => 
+    'core/externalbadges' =>
     array (
       'mode' => 1,
       'simplekeys' => true,
@@ -1477,7 +1462,7 @@ EOF
       'userinputsharingkey' => '',
       'sharingoptions' => 15,
     ),
-    'core/coursemodinfo' => 
+    'core/coursemodinfo' =>
     array (
       'mode' => 1,
       'simplekeys' => true,
@@ -1488,7 +1473,7 @@ EOF
       'userinputsharingkey' => '',
       'sharingoptions' => 15,
     ),
-    'core/userselections' => 
+    'core/userselections' =>
     array (
       'mode' => 2,
       'simplekeys' => true,
@@ -1499,7 +1484,7 @@ EOF
       'userinputsharingkey' => '',
       'sharingoptions' => 2,
     ),
-    'core/completion' => 
+    'core/completion' =>
     array (
       'mode' => 1,
       'simplekeys' => true,
@@ -1513,7 +1498,7 @@ EOF
       'userinputsharingkey' => '',
       'sharingoptions' => 15,
     ),
-    'core/coursecompletion' => 
+    'core/coursecompletion' =>
     array (
       'mode' => 1,
       'simplekeys' => true,
@@ -1527,7 +1512,7 @@ EOF
       'userinputsharingkey' => '',
       'sharingoptions' => 15,
     ),
-    'core/navigation_expandcourse' => 
+    'core/navigation_expandcourse' =>
     array (
       'mode' => 2,
       'simplekeys' => true,
@@ -1538,7 +1523,7 @@ EOF
       'userinputsharingkey' => '',
       'sharingoptions' => 2,
     ),
-    'core/suspended_userids' => 
+    'core/suspended_userids' =>
     array (
       'mode' => 4,
       'simplekeys' => true,
@@ -1549,7 +1534,7 @@ EOF
       'userinputsharingkey' => '',
       'sharingoptions' => 2,
     ),
-    'core/roledefs' => 
+    'core/roledefs' =>
     array (
       'mode' => 1,
       'simplekeys' => true,
@@ -1562,7 +1547,7 @@ EOF
       'userinputsharingkey' => '',
       'sharingoptions' => 15,
     ),
-    'core/plugin_functions' => 
+    'core/plugin_functions' =>
     array (
       'mode' => 1,
       'simplekeys' => true,
@@ -1575,7 +1560,7 @@ EOF
       'userinputsharingkey' => '',
       'sharingoptions' => 15,
     ),
-    'core/tags' => 
+    'core/tags' =>
     array (
       'mode' => 4,
       'simplekeys' => true,
@@ -1586,11 +1571,11 @@ EOF
       'userinputsharingkey' => '',
       'sharingoptions' => 2,
     ),
-    'core/grade_categories' => 
+    'core/grade_categories' =>
     array (
       'mode' => 2,
       'simplekeys' => true,
-      'invalidationevents' => 
+      'invalidationevents' =>
       array (
         0 => 'changesingradecategories',
       ),
@@ -1600,7 +1585,7 @@ EOF
       'userinputsharingkey' => '',
       'sharingoptions' => 2,
     ),
-    'core/temp_tables' => 
+    'core/temp_tables' =>
     array (
       'mode' => 4,
       'simplekeys' => true,
@@ -1611,7 +1596,7 @@ EOF
       'userinputsharingkey' => '',
       'sharingoptions' => 2,
     ),
-    'core/tagindexbuilder' => 
+    'core/tagindexbuilder' =>
     array (
       'mode' => 2,
       'simplekeys' => true,
@@ -1619,7 +1604,7 @@ EOF
       'staticacceleration' => true,
       'staticaccelerationsize' => 10,
       'ttl' => 900,
-      'invalidationevents' => 
+      'invalidationevents' =>
       array (
         0 => 'resettagindexbuilder',
       ),
@@ -1629,7 +1614,7 @@ EOF
       'userinputsharingkey' => '',
       'sharingoptions' => 2,
     ),
-    'core/contextwithinsights' => 
+    'core/contextwithinsights' =>
     array (
       'mode' => 1,
       'simplekeys' => true,
@@ -1642,7 +1627,7 @@ EOF
       'userinputsharingkey' => '',
       'sharingoptions' => 15,
     ),
-    'core/message_processors_enabled' => 
+    'core/message_processors_enabled' =>
     array (
       'mode' => 1,
       'simplekeys' => true,
@@ -1655,7 +1640,7 @@ EOF
       'userinputsharingkey' => '',
       'sharingoptions' => 15,
     ),
-    'core/message_time_last_message_between_users' => 
+    'core/message_time_last_message_between_users' =>
     array (
       'mode' => 1,
       'simplekeys' => true,
@@ -1667,7 +1652,7 @@ EOF
       'userinputsharingkey' => '',
       'sharingoptions' => 15,
     ),
-    'core/fontawesomeiconmapping' => 
+    'core/fontawesomeiconmapping' =>
     array (
       'mode' => 1,
       'simplekeys' => true,
@@ -1680,7 +1665,7 @@ EOF
       'userinputsharingkey' => '',
       'sharingoptions' => 15,
     ),
-    'core/postprocessedcss' => 
+    'core/postprocessedcss' =>
     array (
       'mode' => 1,
       'simplekeys' => true,
@@ -1692,7 +1677,7 @@ EOF
       'userinputsharingkey' => '',
       'sharingoptions' => 15,
     ),
-    'core/user_group_groupings' => 
+    'core/user_group_groupings' =>
     array (
       'mode' => 1,
       'simplekeys' => true,
@@ -1704,7 +1689,7 @@ EOF
       'userinputsharingkey' => '',
       'sharingoptions' => 15,
     ),
-    'availability_grade/scores' => 
+    'availability_grade/scores' =>
     array (
       'mode' => 1,
       'staticacceleration' => true,
@@ -1716,7 +1701,7 @@ EOF
       'userinputsharingkey' => '',
       'sharingoptions' => 15,
     ),
-    'availability_grade/items' => 
+    'availability_grade/items' =>
     array (
       'mode' => 1,
       'staticacceleration' => true,
@@ -1728,7 +1713,7 @@ EOF
       'userinputsharingkey' => '',
       'sharingoptions' => 15,
     ),
-    'mod_glossary/concepts' => 
+    'mod_glossary/concepts' =>
     array (
       'mode' => 1,
       'simplekeys' => true,
@@ -1741,7 +1726,7 @@ EOF
       'userinputsharingkey' => '',
       'sharingoptions' => 15,
     ),
-    'repository_googledocs/folder' => 
+    'repository_googledocs/folder' =>
     array (
       'mode' => 1,
       'simplekeys' => false,
@@ -1755,7 +1740,7 @@ EOF
       'userinputsharingkey' => '',
       'sharingoptions' => 15,
     ),
-    'repository_onedrive/folder' => 
+    'repository_onedrive/folder' =>
     array (
       'mode' => 1,
       'simplekeys' => false,
@@ -1769,7 +1754,7 @@ EOF
       'userinputsharingkey' => '',
       'sharingoptions' => 15,
     ),
-    'repository_skydrive/foldername' => 
+    'repository_skydrive/foldername' =>
     array (
       'mode' => 2,
       'component' => 'repository_skydrive',
@@ -1778,7 +1763,7 @@ EOF
       'userinputsharingkey' => '',
       'sharingoptions' => 2,
     ),
-    'tool_mobile/plugininfo' => 
+    'tool_mobile/plugininfo' =>
     array (
       'mode' => 1,
       'simplekeys' => true,
@@ -1790,7 +1775,7 @@ EOF
       'userinputsharingkey' => '',
       'sharingoptions' => 15,
     ),
-    'tool_monitor/eventsubscriptions' => 
+    'tool_monitor/eventsubscriptions' =>
     array (
       'mode' => 1,
       'simplekeys' => true,
@@ -1803,7 +1788,7 @@ EOF
       'userinputsharingkey' => '',
       'sharingoptions' => 15,
     ),
-    'tool_uploadcourse/helper' => 
+    'tool_uploadcourse/helper' =>
     array (
       'mode' => 4,
       'component' => 'tool_uploadcourse',
@@ -1812,7 +1797,7 @@ EOF
       'userinputsharingkey' => '',
       'sharingoptions' => 2,
     ),
-    'tool_usertours/tourdata' => 
+    'tool_usertours/tourdata' =>
     array (
       'mode' => 1,
       'simplekeys' => true,
@@ -1825,7 +1810,7 @@ EOF
       'userinputsharingkey' => '',
       'sharingoptions' => 15,
     ),
-    'tool_usertours/stepdata' => 
+    'tool_usertours/stepdata' =>
     array (
       'mode' => 1,
       'simplekeys' => true,
@@ -1839,234 +1824,234 @@ EOF
       'sharingoptions' => 15,
     ),
   ),
-  'definitionmappings' => 
+  'definitionmappings' =>
   array (
-    0 => 
+    0 =>
     array (
       'store' => 'local_file',
       'definition' => 'core/coursemodinfo',
       'sort' => 1,
     ),
-    1 => 
+    1 =>
     array (
       'store' => 'redis',
       'definition' => 'core/groupdata',
       'sort' => 1,
     ),
-    2 => 
+    2 =>
     array (
       'store' => 'redis',
       'definition' => 'core/roledefs',
       'sort' => 1,
     ),
-    3 => 
+    3 =>
     array (
       'store' => 'redis',
       'definition' => 'tool_usertours/tourdata',
       'sort' => 1,
     ),
-    4 => 
+    4 =>
     array (
       'store' => 'redis',
       'definition' => 'repository_onedrive/folder',
       'sort' => 1,
     ),
-    5 => 
+    5 =>
     array (
       'store' => 'redis',
       'definition' => 'core/message_processors_enabled',
       'sort' => 1,
     ),
-    6 => 
+    6 =>
     array (
       'store' => 'redis',
       'definition' => 'core/coursecontacts',
       'sort' => 1,
     ),
-    7 => 
+    7 =>
     array (
       'store' => 'redis',
       'definition' => 'repository_googledocs/folder',
       'sort' => 1,
     ),
-    8 => 
+    8 =>
     array (
       'store' => 'redis',
       'definition' => 'core/questiondata',
       'sort' => 1,
     ),
-    9 => 
+    9 =>
     array (
       'store' => 'redis',
       'definition' => 'core/coursecat',
       'sort' => 1,
     ),
-    10 => 
+    10 =>
     array (
       'store' => 'redis',
       'definition' => 'core/databasemeta',
       'sort' => 1,
     ),
-    11 => 
+    11 =>
     array (
       'store' => 'redis',
       'definition' => 'core/eventinvalidation',
       'sort' => 1,
     ),
-    12 => 
+    12 =>
     array (
       'store' => 'redis',
       'definition' => 'core/coursecattree',
       'sort' => 1,
     ),
-    13 => 
+    13 =>
     array (
       'store' => 'redis',
       'definition' => 'core/coursecompletion',
       'sort' => 1,
     ),
-    14 => 
+    14 =>
     array (
       'store' => 'redis',
       'definition' => 'core/user_group_groupings',
       'sort' => 1,
     ),
-    15 => 
+    15 =>
     array (
       'store' => 'redis',
       'definition' => 'core/capabilities',
       'sort' => 1,
     ),
-    16 => 
+    16 =>
     array (
       'store' => 'redis',
       'definition' => 'core/yuimodules',
       'sort' => 1,
     ),
-    17 => 
+    17 =>
     array (
       'store' => 'redis',
       'definition' => 'core/observers',
       'sort' => 1,
     ),
-    18 => 
+    18 =>
     array (
       'store' => 'redis',
       'definition' => 'mod_glossary/concepts',
       'sort' => 1,
     ),
-    19 => 
+    19 =>
     array (
       'store' => 'redis',
       'definition' => 'core/fontawesomeiconmapping',
       'sort' => 1,
     ),
-    20 => 
+    20 =>
     array (
       'store' => 'redis',
       'definition' => 'core/config',
       'sort' => 1,
     ),
-    21 => 
+    21 =>
     array (
       'store' => 'redis',
       'definition' => 'tool_mobile/plugininfo',
       'sort' => 1,
     ),
-    22 => 
+    22 =>
     array (
       'store' => 'redis',
       'definition' => 'core/plugin_functions',
       'sort' => 1,
     ),
-    23 => 
+    23 =>
     array (
       'store' => 'redis',
       'definition' => 'core/postprocessedcss',
       'sort' => 1,
     ),
-    24 => 
+    24 =>
     array (
       'store' => 'redis',
       'definition' => 'core/plugin_manager',
       'sort' => 1,
     ),
-    25 => 
+    25 =>
     array (
       'store' => 'redis',
       'definition' => 'tool_usertours/stepdata',
       'sort' => 1,
     ),
-    26 => 
+    26 =>
     array (
       'store' => 'redis',
       'definition' => 'availability_grade/items',
       'sort' => 1,
     ),
-    27 => 
+    27 =>
     array (
       'store' => 'local_file',
       'definition' => 'core/string',
       'sort' => 1,
     ),
-    28 => 
+    28 =>
     array (
       'store' => 'redis',
       'definition' => 'core/externalbadges',
       'sort' => 1,
     ),
-    29 => 
+    29 =>
     array (
       'store' => 'local_file',
       'definition' => 'core/langmenu',
       'sort' => 1,
     ),
-    30 => 
+    30 =>
     array (
       'store' => 'local_file',
       'definition' => 'core/htmlpurifier',
       'sort' => 1,
     ),
-    31 => 
+    31 =>
     array (
       'store' => 'redis',
       'definition' => 'core/completion',
       'sort' => 1,
     ),
-    32 => 
+    32 =>
     array (
       'store' => 'redis',
       'definition' => 'core/calendar_subscriptions',
       'sort' => 1,
     ),
-    33 => 
+    33 =>
     array (
       'store' => 'redis',
       'definition' => 'core/contextwithinsights',
       'sort' => 1,
     ),
-    34 => 
+    34 =>
     array (
       'store' => 'redis',
       'definition' => 'tool_monitor/eventsubscriptions',
       'sort' => 1,
     ),
-    35 => 
+    35 =>
     array (
       'store' => 'redis',
       'definition' => 'core/message_time_last_message_between_users',
       'sort' => 1,
     ),
-    36 => 
+    36 =>
     array (
       'store' => 'redis',
       'definition' => 'availability_grade/scores',
       'sort' => 1,
     ),
   ),
-  'locks' => 
+  'locks' =>
   array (
-    'cachelock_file_default' => 
+    'cachelock_file_default' =>
     array (
       'name' => 'cachelock_file_default',
       'type' => 'cachelock_file',
@@ -2088,12 +2073,7 @@ EOF
 
     # We proxy ssl, so moodle needs to know this
     sed -i "23 a \$CFG->sslproxy  = 'true';" /moodle/html/moodle/config.php
-
-    # Set up elasticsearch plugin
-    sed -i "23 a \$CFG->forced_plugin_settings = ['search_elastic' => ['hostname' => 'http://$elasticVm1IP']];" /moodle/html/moodle/config.php
-    sed -i "23 a \$CFG->searchengine = 'elastic';" /moodle/html/moodle/config.php
-    sed -i "23 a \$CFG->enableglobalsearch = 'true';" /moodle/html/moodle/config.php
-
+    
     # Set the ObjectFS alternate filesystem
     sed -i "23 a \$CFG->alternative_file_system_class = '\\\tool_objectfs\\\azure_file_system';" /moodle/html/moodle/config.php
 
