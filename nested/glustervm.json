@@ -47,7 +47,7 @@
             "location": "[resourceGroup().location]",
             "name": "[concat(variables('vmName'),'-datadisk',copyIndex(1))]",
             "properties": {
-                "accountType": "Premium_LRS",
+                "accountType": "Standard_LRS",
                 "creationData": {
                     "createOption": "Empty"
                 },
@@ -123,7 +123,7 @@
                     "osDisk": {
                         "createOption": "fromImage",
                         "managedDisk": {
-                            "storageAccountType": "Premium_LRS"
+                            "storageAccountType": "Standard_LRS"
                         },
                         "name": "[variables('vmName')]"
                     }
