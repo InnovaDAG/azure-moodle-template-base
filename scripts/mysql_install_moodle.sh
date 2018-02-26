@@ -613,3 +613,4 @@ EOF
     mkdir -p /moodle/certs
     mkdir -p /moodle/moodledata
     chown -R www-data.www-data /moodle
+}  > /tmp/install.log
