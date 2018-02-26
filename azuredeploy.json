@@ -365,6 +365,35 @@
         {
             "apiVersion": "2015-01-01",
             "dependsOn": [
+                "Microsoft.Resources/deployments/elasticTemplate",
+                "Microsoft.Resources/deployments/glusterTemplate",
+                "Microsoft.Resources/deployments/recoveryTemplate",
+                "Microsoft.Resources/deployments/redisTemplate",
+                "Microsoft.Resources/deployments/blobStorageAccountTemplate"
+            ],
+            "name": "controllerTemplate",
+            "properties": {
+                "mode": "Incremental",
+                "parameters": {
+                    "moodleCommon": {
+                        "value": "[variables('moodleCommon')]"
+                    },
+                    "blobStorageAccountKey": {
+                        "value": "[reference('blobStorageAccountTemplate').outputs.blobStorageAccountKey.value]"
+                    },
+                    "redisPrimaryKey": {
+                        "value": "[reference('redisTemplate').outputs.redisPrimaryKey.value]"
+                    }
+                },
+                "templateLink": {
+                    "uri": "[concat(variables('moodleCommon').baseTemplateUrl,'controller.json')]"
+                }
+            },
+            "type": "Microsoft.Resources/deployments"
+        },
+        {
+            "apiVersion": "2015-01-01",
+            "dependsOn": [
                 "Microsoft.Resources/deployments/controllerTemplate",
                 "Microsoft.Resources/deployments/redisTemplate",
                 "Microsoft.Resources/deployments/dbTemplate"
