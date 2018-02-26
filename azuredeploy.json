@@ -37,7 +37,7 @@
             "type": "string"
         },
         "dbServerType": {
-            "defaultValue": "postgres",
+            "defaultValue": "mysql",
             "allowedValues": [
                 "postgres",
                 "mysql"
