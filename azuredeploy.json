@@ -49,14 +49,14 @@
             "type": "string"
         },
         "controllerVmSku": {
-            "defaultValue": "Standard_A1_v2",
+            "defaultValue": "Standard_DS1_v2",
             "metadata": {
                 "description": "VM size for the controller node"
             },
             "type": "string"
         },
         "autoscaleVmSku": {
-            "defaultValue": "Standard_D1_v2",
+            "defaultValue": "Standard_DS2_v2",
             "metadata": {
                 "description": "VM size for autoscaled nodes"
             },
@@ -98,7 +98,7 @@
             "type": "string"
         },
         "glusterVmSku": {
-            "defaultValue": "Standard_D1_v2",
+            "defaultValue": "Standard_DS2_v2",
             "metadata": {
                 "description": "VM size for the gluster nodes"
             },
@@ -118,7 +118,21 @@
             },
             "type": "int"
         },
-
+        "moodleVersion": {
+            "allowedValues": [
+                "MOODLE_34_STABLE",
+                "MOODLE_33_STABLE",
+                "MOODLE_32_STABLE",
+                "MOODLE_31_STABLE",
+                "MOODLE_30_STABLE",
+                "MOODLE_29_STABLE"
+            ],
+            "defaultValue": "MOODLE_34_STABLE",
+            "metadata": {
+                "description": "The Moodle version you want to install."
+            },
+            "type": "string"
+        },
         "dbLogin": {
             "defaultValue": "dbadmin",
             "metadata": {
@@ -329,7 +343,6 @@
             },
             "type": "Microsoft.Resources/deployments"
         },
-
         {
             "apiVersion": "2015-01-01",
             "dependsOn": [
@@ -346,34 +359,6 @@
                 },
                 "templateLink": {
                     "uri": "[concat(variables('moodleCommon').baseTemplateUrl,'gluster.json')]"
-                }
-            },
-            "type": "Microsoft.Resources/deployments"
-        },
-        {
-            "apiVersion": "2015-01-01",
-            "dependsOn": [
-                "Microsoft.Resources/deployments/glusterTemplate",
-                "Microsoft.Resources/deployments/recoveryTemplate",
-                "Microsoft.Resources/deployments/redisTemplate",
-                "Microsoft.Resources/deployments/blobStorageAccountTemplate"
-            ],
-            "name": "controllerTemplate",
-            "properties": {
-                "mode": "Incremental",
-                "parameters": {
-                    "moodleCommon": {
-                        "value": "[variables('moodleCommon')]"
-                    },
-                    "blobStorageAccountKey": {
-                        "value": "[reference('blobStorageAccountTemplate').outputs.blobStorageAccountKey.value]"
-                    },
-                    "redisPrimaryKey": {
-                        "value": "[reference('redisTemplate').outputs.redisPrimaryKey.value]"
-                    }
-                },
-                "templateLink": {
-                    "uri": "[concat(variables('moodleCommon').baseTemplateUrl,'controller.json')]"
                 }
             },
             "type": "Microsoft.Resources/deployments"
@@ -462,8 +447,8 @@
         "documentation10": "    controller          - creates a jumpbox and deploys code",
         "documentation11": "GlusterFS Sizing guidance",
         "moodleCommon": {
-            "baseTemplateUrl": "https://raw.githubusercontent.com/InnovaDAG/azure-moodle-template-base/master/nested/",
-            "scriptLocation": "https://raw.githubusercontent.com/InnovaDAG/azure-moodle-template-base/master/scripts/",
+            "baseTemplateUrl": "https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/moodle-scalable-cluster-ubuntu/nested/",
+            "scriptLocation": "https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/moodle-scalable-cluster-ubuntu/scripts/",
 
             "applyScriptsSwitch": "[parameters('applyScriptsSwitch')]",
             "autoscaleVmCount": "[parameters('autoscaleVmCount')]",
@@ -509,6 +494,7 @@
             "moodleDbUserAzure": "[concat('moodle', '@', parameters('dbServerType'), '-', variables('resourceprefix'))]",
             "moodleInstallScriptFilename": "[concat(parameters('dbServerType'), '_', 'install_moodle.sh')]",
             "moodleSetupScriptFilename": "setup_moodle.sh",
+            "moodleVersion": "[parameters('moodleVersion')]",
             "mysqlVersion": "[parameters('mysqlVersion')]",
             "osType": {
                 "offer": "UbuntuServer",
