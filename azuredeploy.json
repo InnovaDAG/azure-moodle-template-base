@@ -446,8 +446,8 @@
         "documentation10": "    controller          - creates a jumpbox and deploys code",
         "documentation11": "GlusterFS Sizing guidance",
         "moodleCommon": {
-            "baseTemplateUrl": "https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/moodle-scalable-cluster-ubuntu/nested/",
-            "scriptLocation": "https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/moodle-scalable-cluster-ubuntu/scripts/",
+            "baseTemplateUrl": "https://raw.githubusercontent.com/InnovaDAG/azure-moodle-template-base/master/nested/",
+            "scriptLocation": "https://raw.githubusercontent.com/InnovaDAG/azure-moodle-template-base/master/scripts/",
 
             "applyScriptsSwitch": "[parameters('applyScriptsSwitch')]",
             "autoscaleVmCount": "[parameters('autoscaleVmCount')]",
